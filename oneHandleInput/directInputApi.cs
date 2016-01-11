@@ -36,10 +36,13 @@ namespace oneHandleInput
             m_joyInstance.Clear();
 
             DeviceList joyDeviceList = Manager.GetDevices(DeviceClass.GameControl, EnumDevicesFlags.AttachedOnly);
-            
-            foreach (DeviceInstance joyInstance in joyDeviceList)
+
+            if (joyDeviceList != null)
             {
-                m_joyInstance.Add(joyInstance);
+                foreach (DeviceInstance joyInstance in joyDeviceList)
+                {
+                    m_joyInstance.Add(joyInstance);
+                }
             }
         }
 
