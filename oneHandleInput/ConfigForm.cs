@@ -235,7 +235,10 @@ namespace oneHandleInput
         {
             ConfigFormSaveData saveData = new ConfigFormSaveData();
 
-            saveData.guid = directInputApi.currentJoystick.DeviceInformation.ProductGuid;
+            if (directInputApi.currentJoystick != null)
+            {
+                saveData.guid = directInputApi.currentJoystick.DeviceInformation.ProductGuid;
+            }
 
             saveData.reverserPosFront = fromString(txtReverserFront.Text);
             saveData.reverserPosBack = fromString(txtReverserBack.Text);
@@ -292,7 +295,7 @@ namespace oneHandleInput
 
             cmbJoySelect.Items.Clear();
 
-            if (joyNum != 0) return;
+            if (joyNum == 0) return;
 
             cmbJoySelect.MaxDropDownItems = joyNum;
 
