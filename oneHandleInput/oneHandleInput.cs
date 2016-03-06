@@ -107,6 +107,18 @@ namespace oneHandleInput
                                     case 102:
                                         onLeverMoved(0, -1);
                                         break;
+                                    case 103:
+                                        onKeyDown(-1, 0);
+                                        break;
+                                    case 104:
+                                        onKeyDown(-1, 1);
+                                        break;
+                                    case 105:
+                                        onKeyDown(-1, 3);
+                                        break;
+                                    case 106:
+                                        onKeyDown(-1, 2);
+                                        break;
                                 }
                             }
                         }
@@ -122,7 +134,21 @@ namespace oneHandleInput
                             }
                             else
                             {
-
+                                switch (keyIdx)
+                                {
+                                    case 103:
+                                        onKeyUp(-1, 0);
+                                        break;
+                                    case 104:
+                                        onKeyUp(-1, 1);
+                                        break;
+                                    case 105:
+                                        onKeyUp(-1, 3);
+                                        break;
+                                    case 106:
+                                        onKeyDown(-1, 2);
+                                        break;
+                                }
                             }
                         }
                     }
@@ -210,6 +236,22 @@ namespace oneHandleInput
             else if (config.switchReverserBack == i)
             {
                 keyIdx = 102;
+            }
+            else if (config.switchHorn1 == i)
+            {
+                keyIdx = 103;
+            }
+            else if (config.switchHorn2 == i)
+            {
+                keyIdx = 104;
+            }
+            else if (config.switchMusicHorn == i)
+            {
+                keyIdx = 105;
+            }
+            else if (config.switchConstSpeed == i)
+            {
+                keyIdx = 106;
             }
 
             return keyIdx;

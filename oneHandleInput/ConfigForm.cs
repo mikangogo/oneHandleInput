@@ -61,6 +61,10 @@ namespace oneHandleInput
             public int switchReverserFront;
             public int switchReverserNeutral;
             public int switchReverserBack;
+            public int switchHorn1;
+            public int switchHorn2;
+            public int switchMusicHorn;
+            public int switchConstSpeed;
         };
 
         public enum AxisType
@@ -163,6 +167,10 @@ namespace oneHandleInput
             m_saveData.switchReverserFront = fromSwitchString("OFF");
             m_saveData.switchReverserNeutral = fromSwitchString("OFF");
             m_saveData.switchReverserBack = fromSwitchString("OFF");
+            m_saveData.switchHorn1 = fromSwitchString("OFF");
+            m_saveData.switchHorn2 = fromSwitchString("OFF");
+            m_saveData.switchMusicHorn = fromSwitchString("OFF");
+            m_saveData.switchConstSpeed = fromSwitchString("OFF");
         }
 
         private string toSwitchString(int n)
@@ -229,6 +237,10 @@ namespace oneHandleInput
             txtSwReverserFront.Text = toSwitchString(saveData.switchReverserFront);
             txtSwReverserNeutral.Text = toSwitchString(saveData.switchReverserNeutral);
             txtSwReverserBack.Text = toSwitchString(saveData.switchReverserBack);
+            txtSwHorn1.Text = toSwitchString(saveData.switchHorn1);
+            txtSwHorn2.Text = toSwitchString(saveData.switchHorn2);
+            txtSwMusicHorn.Text = toSwitchString(saveData.switchMusicHorn);
+            txtSwConstSpeed.Text = toSwitchString(saveData.switchConstSpeed);
         }
 
         private ConfigFormSaveData saveConfiguration()
@@ -284,6 +296,10 @@ namespace oneHandleInput
             saveData.switchReverserFront = fromSwitchString(txtSwReverserFront.Text);
             saveData.switchReverserNeutral = fromSwitchString(txtSwReverserNeutral.Text);
             saveData.switchReverserBack = fromSwitchString(txtSwReverserBack.Text);
+            saveData.switchHorn1 = fromSwitchString(txtSwHorn1.Text);
+            saveData.switchHorn2 = fromSwitchString(txtSwHorn2.Text);
+            saveData.switchMusicHorn = fromSwitchString(txtSwMusicHorn.Text);
+            saveData.switchConstSpeed = fromSwitchString(txtSwConstSpeed.Text);
 
             return saveData;
         }
@@ -440,6 +456,22 @@ namespace oneHandleInput
                     else if (txtSwReverserBack.Focused)
                     {
                         txtSwReverserBack.Text = toSwitchString(i);
+                    }
+                    else if (txtSwHorn1.Focused)
+                    {
+                        txtSwHorn1.Text = toSwitchString(i);
+                    }
+                    else if (txtSwHorn2.Focused)
+                    {
+                        txtSwHorn2.Text = toSwitchString(i);
+                    }
+                    else if (txtSwMusicHorn.Focused)
+                    {
+                        txtSwMusicHorn.Text = toSwitchString(i);
+                    }
+                    else if (txtSwConstSpeed.Focused)
+                    {
+                        txtSwConstSpeed.Text = toSwitchString(i);
                     }
 
                     break;

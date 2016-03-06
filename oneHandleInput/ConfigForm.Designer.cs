@@ -129,6 +129,14 @@
             this.label37 = new System.Windows.Forms.Label();
             this.txtSsbMax = new System.Windows.Forms.TextBox();
             this.label38 = new System.Windows.Forms.Label();
+            this.txtSwMusicHorn = new System.Windows.Forms.TextBox();
+            this.txtSwHorn2 = new System.Windows.Forms.TextBox();
+            this.txtSwHorn1 = new System.Windows.Forms.TextBox();
+            this.txtSwConstSpeed = new System.Windows.Forms.TextBox();
+            this.label43 = new System.Windows.Forms.Label();
+            this.label44 = new System.Windows.Forms.Label();
+            this.label45 = new System.Windows.Forms.Label();
+            this.label46 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -440,6 +448,14 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label46);
+            this.groupBox1.Controls.Add(this.label43);
+            this.groupBox1.Controls.Add(this.label44);
+            this.groupBox1.Controls.Add(this.label45);
+            this.groupBox1.Controls.Add(this.txtSwConstSpeed);
+            this.groupBox1.Controls.Add(this.txtSwMusicHorn);
+            this.groupBox1.Controls.Add(this.txtSwHorn2);
+            this.groupBox1.Controls.Add(this.txtSwHorn1);
             this.groupBox1.Controls.Add(this.label42);
             this.groupBox1.Controls.Add(this.label41);
             this.groupBox1.Controls.Add(this.label40);
@@ -1099,6 +1115,78 @@
             this.label38.TabIndex = 2;
             this.label38.Text = "最大";
             // 
+            // txtSwMusicHorn
+            // 
+            this.txtSwMusicHorn.Location = new System.Drawing.Point(133, 240);
+            this.txtSwMusicHorn.Name = "txtSwMusicHorn";
+            this.txtSwMusicHorn.ReadOnly = true;
+            this.txtSwMusicHorn.Size = new System.Drawing.Size(76, 19);
+            this.txtSwMusicHorn.TabIndex = 41;
+            this.txtSwMusicHorn.KeyDown += new System.Windows.Forms.KeyEventHandler(this.deconfigurateSwitch);
+            // 
+            // txtSwHorn2
+            // 
+            this.txtSwHorn2.Location = new System.Drawing.Point(133, 215);
+            this.txtSwHorn2.Name = "txtSwHorn2";
+            this.txtSwHorn2.ReadOnly = true;
+            this.txtSwHorn2.Size = new System.Drawing.Size(76, 19);
+            this.txtSwHorn2.TabIndex = 40;
+            this.txtSwHorn2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.deconfigurateSwitch);
+            // 
+            // txtSwHorn1
+            // 
+            this.txtSwHorn1.Location = new System.Drawing.Point(133, 189);
+            this.txtSwHorn1.Name = "txtSwHorn1";
+            this.txtSwHorn1.ReadOnly = true;
+            this.txtSwHorn1.Size = new System.Drawing.Size(76, 19);
+            this.txtSwHorn1.TabIndex = 39;
+            this.txtSwHorn1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.deconfigurateSwitch);
+            // 
+            // txtSwConstSpeed
+            // 
+            this.txtSwConstSpeed.Location = new System.Drawing.Point(133, 264);
+            this.txtSwConstSpeed.Name = "txtSwConstSpeed";
+            this.txtSwConstSpeed.ReadOnly = true;
+            this.txtSwConstSpeed.Size = new System.Drawing.Size(76, 19);
+            this.txtSwConstSpeed.TabIndex = 42;
+            this.txtSwConstSpeed.KeyDown += new System.Windows.Forms.KeyEventHandler(this.deconfigurateSwitch);
+            // 
+            // label43
+            // 
+            this.label43.AutoSize = true;
+            this.label43.Location = new System.Drawing.Point(107, 243);
+            this.label43.Name = "label43";
+            this.label43.Size = new System.Drawing.Size(22, 12);
+            this.label43.TabIndex = 45;
+            this.label43.Text = "MH";
+            // 
+            // label44
+            // 
+            this.label44.AutoSize = true;
+            this.label44.Location = new System.Drawing.Point(106, 219);
+            this.label44.Name = "label44";
+            this.label44.Size = new System.Drawing.Size(23, 12);
+            this.label44.TabIndex = 44;
+            this.label44.Text = "笛2";
+            // 
+            // label45
+            // 
+            this.label45.AutoSize = true;
+            this.label45.Location = new System.Drawing.Point(106, 192);
+            this.label45.Name = "label45";
+            this.label45.Size = new System.Drawing.Size(23, 12);
+            this.label45.TabIndex = 43;
+            this.label45.Text = "笛1";
+            // 
+            // label46
+            // 
+            this.label46.AutoSize = true;
+            this.label46.Location = new System.Drawing.Point(104, 267);
+            this.label46.Name = "label46";
+            this.label46.Size = new System.Drawing.Size(29, 12);
+            this.label46.TabIndex = 46;
+            this.label46.Text = "定速";
+            // 
             // ConfigForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1239,5 +1327,13 @@
         private System.Windows.Forms.Label label37;
         private System.Windows.Forms.TextBox txtSsbMax;
         private System.Windows.Forms.Label label38;
+        private System.Windows.Forms.Label label46;
+        private System.Windows.Forms.Label label43;
+        private System.Windows.Forms.Label label44;
+        private System.Windows.Forms.Label label45;
+        private System.Windows.Forms.TextBox txtSwConstSpeed;
+        private System.Windows.Forms.TextBox txtSwMusicHorn;
+        private System.Windows.Forms.TextBox txtSwHorn2;
+        private System.Windows.Forms.TextBox txtSwHorn1;
     }
 }
