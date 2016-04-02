@@ -146,7 +146,7 @@ namespace oneHandleInput
                                         onKeyUp(-1, 3);
                                         break;
                                     case 106:
-                                        onKeyDown(-1, 2);
+                                        onKeyUp(-1, 2);
                                         break;
                                 }
                             }
