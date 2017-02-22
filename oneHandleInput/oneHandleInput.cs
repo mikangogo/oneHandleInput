@@ -400,7 +400,7 @@ namespace oneHandleInput
             {
                 int diff = Math.Abs(m_lastBrakePos - notchPos);
 
-                if (diff >= config.brakeChatter)
+                if (diff > config.brakeChatter)
                 {
                     onLeverMoved(2, notchPos);
                     m_lastBrakePos = notchPos;
