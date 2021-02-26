@@ -12,6 +12,11 @@
 * Microsoft Visual Studio
 
 
+## How to download
+
+* See [Releases](https://github.com/mikangogo/oneHandleInput/releases) page.
+
+
 ## How to build
 
 1. Open the `oneHandleInput.sln` at Visual Studio.
