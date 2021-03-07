@@ -77,15 +77,15 @@ namespace oneHandleInput
 
         private void setSwitchState()
         {
-            byte[] currentButtonState = directInputApi.currentJoystickState.GetButtons();
-            byte[] lastButtonState = directInputApi.lastJoystickState.GetButtons();
-            int buttonNum = directInputApi.currentJoystick.Caps.NumberButtons;
+            var currentButtonState = directInputApi.currentJoystickState.GetButtons();
+            var lastButtonState = directInputApi.lastJoystickState.GetButtons();
+            int buttonNum = directInputApi.currentJoystick.Capabilities.ButtonCount;
 
             for (int i = 0; i < buttonNum; ++i)
             {
                 if (currentButtonState[i] != lastButtonState[i])
                 {
-                    if (currentButtonState[i] != 0)
+                    if (currentButtonState[i] != false)
                     {
                         int keyIdx = getKeyIdx(i);
                         if (keyIdx != -1)
@@ -123,7 +123,7 @@ namespace oneHandleInput
                             }
                         }
                     }
-                    else if (currentButtonState[i] == 0)
+                    else if (currentButtonState[i] == false)
                     {
                         int keyIdx = getKeyIdx(i);
                         if (keyIdx != -1)
@@ -470,13 +470,13 @@ namespace oneHandleInput
                     axisValue = directInputApi.currentJoystickState.Z;
                     break;
                 case ConfigForm.AxisType.axisRx:
-                    axisValue = directInputApi.currentJoystickState.Rx;
+                    axisValue = directInputApi.currentJoystickState.RotationX;
                     break;
                 case ConfigForm.AxisType.axisRy:
-                    axisValue = directInputApi.currentJoystickState.Ry;
+                    axisValue = directInputApi.currentJoystickState.RotationY;
                     break;
                 case ConfigForm.AxisType.axisRz:
-                    axisValue = directInputApi.currentJoystickState.Rz;
+                    axisValue = directInputApi.currentJoystickState.RotationZ;
                     break;
             }
 

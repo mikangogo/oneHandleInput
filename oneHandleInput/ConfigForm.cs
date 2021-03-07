@@ -249,7 +249,7 @@ namespace oneHandleInput
 
             if (directInputApi.currentJoystick != null)
             {
-                saveData.guid = directInputApi.currentJoystick.DeviceInformation.ProductGuid;
+                saveData.guid = directInputApi.currentJoystick.Information.ProductGuid;
             }
 
             saveData.reverserPosFront = fromString(txtReverserFront.Text);
@@ -321,7 +321,7 @@ namespace oneHandleInput
 
                 if (m_saveData.guid == directInputApi.joystickList[i].ProductGuid)
                 {
-                    directInputApi.selectJoystick(i);
+                    directInputApi.selectJoystick(i, this.Handle);
                     cmbJoySelect.SelectedIndex = i;
                 }
             }
@@ -372,11 +372,11 @@ namespace oneHandleInput
 
         private void configurateSwitch()
         {
-            int buttonNum = directInputApi.currentJoystick.Caps.NumberButtons;
+            int buttonNum = directInputApi.currentJoystick.Capabilities.ButtonCount;
 
-            byte[] currentButtonState = directInputApi.currentJoystickState.GetButtons();
-            byte[] lastButtonState = directInputApi.lastJoystickState.GetButtons();
-            
+            var currentButtonState = directInputApi.currentJoystickState.GetButtons();
+            var lastButtonState = directInputApi.lastJoystickState.GetButtons();
+
             for (int i = 0; i < buttonNum; ++i)
             {
                 if (currentButtonState[i] != lastButtonState[i])
@@ -490,18 +490,18 @@ namespace oneHandleInput
                     txtInfoX.Text = toString(directInputApi.currentJoystickState.X);
                     txtInfoY.Text = toString(directInputApi.currentJoystickState.Y);
                     txtInfoZ.Text = toString(directInputApi.currentJoystickState.Z);
-                    txtInfoRx.Text = toString(directInputApi.currentJoystickState.Rx);
-                    txtInfoRy.Text = toString(directInputApi.currentJoystickState.Ry);
-                    txtInfoRz.Text = toString(directInputApi.currentJoystickState.Rz);
+                    txtInfoRx.Text = toString(directInputApi.currentJoystickState.RotationX);
+                    txtInfoRy.Text = toString(directInputApi.currentJoystickState.RotationY);
+                    txtInfoRz.Text = toString(directInputApi.currentJoystickState.RotationZ);
                 }
                 else
                 {
                     txtInfoX.Text = toString(0xFFFF - directInputApi.currentJoystickState.X);
                     txtInfoY.Text = toString(0xFFFF - directInputApi.currentJoystickState.Y);
                     txtInfoZ.Text = toString(0xFFFF - directInputApi.currentJoystickState.Z);
-                    txtInfoRx.Text = toString(0xFFFF - directInputApi.currentJoystickState.Rx);
-                    txtInfoRy.Text = toString(0xFFFF - directInputApi.currentJoystickState.Ry);
-                    txtInfoRz.Text = toString(0xFFFF - directInputApi.currentJoystickState.Rz);
+                    txtInfoRx.Text = toString(0xFFFF - directInputApi.currentJoystickState.RotationX);
+                    txtInfoRy.Text = toString(0xFFFF - directInputApi.currentJoystickState.RotationY);
+                    txtInfoRz.Text = toString(0xFFFF - directInputApi.currentJoystickState.RotationZ);
                 }
 
                 configurateSwitch();
@@ -529,7 +529,7 @@ namespace oneHandleInput
         {
             if (cmbJoySelect.SelectedIndex != -1)
             {
-                directInputApi.selectJoystick(cmbJoySelect.SelectedIndex);
+                directInputApi.selectJoystick(cmbJoySelect.SelectedIndex, this.Handle);
             }
         }
 

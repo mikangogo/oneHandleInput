@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-using Microsoft.DirectX.DirectInput;
+using SlimDX.DirectInput;
 
 namespace oneHandleInput
 {
     public class directInputApi
     {
-        static private Device m_currentJoystick;
+        static private DirectInput DirectInputManager { get; set; }
+        static private Joystick m_currentJoystick;
         static private List<DeviceInstance> m_joyInstance;
         static private JoystickState m_joyState, m_lastJoyState;
 
         public static void init()
         {
+            DirectInputManager = new DirectInput();
+
             m_currentJoystick = null;
             m_joyInstance = new List<DeviceInstance>();
             m_joyState = new JoystickState();
@@ -35,7 +36,7 @@ namespace oneHandleInput
         {
             m_joyInstance.Clear();
 
-            DeviceList joyDeviceList = Manager.GetDevices(DeviceClass.GameControl, EnumDevicesFlags.AttachedOnly);
+            var joyDeviceList = DirectInputManager.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly);
 
             if (joyDeviceList != null)
             {
@@ -46,16 +47,15 @@ namespace oneHandleInput
             }
         }
 
-        public static void selectJoystick(int idx)
+        public static void selectJoystick(int idx, IntPtr ownerWindow)
         {
             if (m_currentJoystick != null)
             {
                 m_currentJoystick.Dispose();
             }
 
-            m_currentJoystick = new Device(m_joyInstance[idx].InstanceGuid);
-            m_currentJoystick.SetCooperativeLevel(null, CooperativeLevelFlags.Background | CooperativeLevelFlags.NonExclusive);
-            m_currentJoystick.SetDataFormat(DeviceDataFormat.Joystick);
+            m_currentJoystick = new Joystick(DirectInputManager, m_joyInstance[idx].InstanceGuid);
+            m_currentJoystick.SetCooperativeLevel(ownerWindow, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
 
             m_currentJoystick.Acquire();
         }
@@ -74,7 +74,7 @@ namespace oneHandleInput
                 m_currentJoystick.Poll();
                 m_currentJoystick.Acquire();
 
-                m_joyState = m_currentJoystick.CurrentJoystickState;
+                m_joyState = m_currentJoystick.GetCurrentState();
             }
             catch
             {
