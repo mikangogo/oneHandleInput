@@ -1,72 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-using System.IO;
 
 namespace oneHandleInput
 {
     public partial class ConfigForm : Form
     {
-        public struct ConfigFormSaveData
-        {
-            public Guid guid;
-
-            public int reverserPosFront;
-            public int reverserPosBack;
-            public int reverserAxis;
-            public bool reverserAxisNegative;
-
-            public int brakePosEmr;
-            public int brakePosMax;
-            public int brakePosNeutral;
-            public int brakeNotches;
-            public int brakeChatter;
-            public int brakeAxis;
-            public bool brakeAxisNegative;
-
-            public int powerPosNeutral;
-            public int powerPosMax;
-            public int powerNotches;
-            public int powerAxis;
-            public bool powerAxisNegative;
-
-            public int ssbPosMax;
-            public int ssbPosNeutral;
-            public int ssbNotches;
-            public int ssbAxis;
-            public bool ssbAxisNegative;
-
-            public int switchS;
-            public int switchA1;
-            public int switchA2;
-            public int switchB1;
-            public int switchB2;
-            public int switchC1;
-            public int switchC2;
-            public int switchD;
-            public int switchE;
-            public int switchF;
-            public int switchG;
-            public int switchH;
-            public int switchI;
-            public int switchJ;
-            public int switchK;
-            public int switchL;
-            public int switchReverserFront;
-            public int switchReverserNeutral;
-            public int switchReverserBack;
-            public int switchHorn1;
-            public int switchHorn2;
-            public int switchMusicHorn;
-            public int switchConstSpeed;
-        };
-
         public enum AxisType
         {
             axisNothing = 0,
@@ -78,53 +22,17 @@ namespace oneHandleInput
             axisRz,
         }
 
-        private ConfigFormSaveData m_saveData;
-        private const string FileName = "oneHandleInput.xml";
+        private readonly FormStringConverter m_converter = new FormStringConverter();
+        private string m_configDirectory;
+        private ProfileSet m_profiles;
+
+        private bool m_isSaved;
+
+        private const string SubDirectoryName = "oneHandleInput";
         
-        private string m_configFilePath;
+        public ConfigProfile currentProfile => m_profiles.currentProfile;
 
-        public ConfigFormSaveData Configuration
-        {
-            get
-            {
-                return m_saveData;
-            }
-        }
-
-        public void loadConfigurationFile(string path)
-        {
-            m_configFilePath = path;
-
-            try
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(ConfigFormSaveData));
-                FileStream fs = new FileStream(Path.Combine(path, FileName), FileMode.Open);
-                m_saveData = (ConfigFormSaveData)serializer.Deserialize(fs);
-                fs.Close();
-            }
-            catch
-            {
-                
-            }
-        }
-
-        public void saveConfigurationFile(string path)
-        {
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-
-            path = Path.Combine(path, FileName);
-
-            XmlSerializer serializer = new XmlSerializer(typeof(ConfigFormSaveData));
-            FileStream fs = new FileStream(path, FileMode.Create);
-
-            serializer.Serialize(fs, m_saveData);
-            fs.Close();
-        }
-
-        public ConfigForm()
+        public ConfigForm(string path)
         {
             InitializeComponent();
 
@@ -146,162 +54,132 @@ namespace oneHandleInput
                 cmbAxisSsb.Items.Add(s);
             }
 
-            m_saveData = new ConfigFormSaveData();
-
-            m_saveData.switchS = fromSwitchString("OFF");
-            m_saveData.switchA1 = fromSwitchString("OFF");
-            m_saveData.switchA2 = fromSwitchString("OFF");
-            m_saveData.switchB1 = fromSwitchString("OFF");
-            m_saveData.switchB2 = fromSwitchString("OFF");
-            m_saveData.switchC1 = fromSwitchString("OFF");
-            m_saveData.switchC2 = fromSwitchString("OFF");
-            m_saveData.switchD = fromSwitchString("OFF");
-            m_saveData.switchE = fromSwitchString("OFF");
-            m_saveData.switchF = fromSwitchString("OFF");
-            m_saveData.switchG = fromSwitchString("OFF");
-            m_saveData.switchH = fromSwitchString("OFF");
-            m_saveData.switchI = fromSwitchString("OFF");
-            m_saveData.switchJ = fromSwitchString("OFF");
-            m_saveData.switchK = fromSwitchString("OFF");
-            m_saveData.switchL = fromSwitchString("OFF");
-            m_saveData.switchReverserFront = fromSwitchString("OFF");
-            m_saveData.switchReverserNeutral = fromSwitchString("OFF");
-            m_saveData.switchReverserBack = fromSwitchString("OFF");
-            m_saveData.switchHorn1 = fromSwitchString("OFF");
-            m_saveData.switchHorn2 = fromSwitchString("OFF");
-            m_saveData.switchMusicHorn = fromSwitchString("OFF");
-            m_saveData.switchConstSpeed = fromSwitchString("OFF");
+            m_configDirectory = Path.Combine(path, SubDirectoryName);
+            loadProfiles();
         }
 
-        private string toSwitchString(int n)
-        { 
-            switch (n)
+        private void loadProfiles()
+        {
+            if (!Directory.Exists(m_configDirectory))
             {
-                case -1:    return "OFF";
-                default:    return toString(n);
+                Directory.CreateDirectory(m_configDirectory);
             }
+            m_profiles = ProfileSet.load(m_configDirectory);
+            string currentKey = m_profiles.currentKey;
+            cmbProfileSelect.DataSource = m_profiles.keys.ToList();
+            cmbProfileSelect.SelectedItem = currentKey;
+
+            cmbProfileSelect.Enabled = !m_profiles.isInitialSetting;
+            btnSave.Enabled = !m_profiles.isInitialSetting;
         }
 
-        private int fromSwitchString(string s)
+        private void restoreConfiguration(ConfigProfile profile)
         {
-            switch (s)
-            {
-                case "OFF":     return -1;
-                default:        return fromString(s);
-            }
+            txtReverserFront.Text = m_converter.toString(profile.reverserPosFront);
+            txtReverserBack.Text = m_converter.toString(profile.reverserPosBack);
+            cmbAxisReverser.SelectedIndex = profile.reverserAxis;
+            chkAxisReverserNegative.Checked = profile.reverserAxisNegative;
+
+            txtBrakeEmr.Text = m_converter.toString(profile.brakePosEmr);
+            txtBrakeMax.Text = m_converter.toString(profile.brakePosMax);
+            txtBrakeNeutral.Text = m_converter.toString(profile.brakePosNeutral);
+            txtBrakeNotches.Text = m_converter.toString(profile.brakeNotches);
+            txtBrakeChatter.Text = m_converter.toString(profile.brakeChatter);
+            cmbAxisBrake.SelectedIndex = profile.brakeAxis;
+            chkAxisBrakeNegative.Checked = profile.brakeAxisNegative;
+
+            txtPowerNeutral.Text = m_converter.toString(profile.powerPosNeutral);
+            txtPowerMax.Text = m_converter.toString(profile.powerPosMax);
+            txtPowerNotches.Text = m_converter.toString(profile.powerNotches);
+            cmbAxisPower.SelectedIndex = profile.powerAxis;
+            chkAxisPowerNegative.Checked = profile.powerAxisNegative;
+
+            txtSsbNeutral.Text = m_converter.toString(profile.ssbPosNeutral);
+            txtSsbMax.Text = m_converter.toString(profile.ssbPosMax);
+            txtSsbNotches.Text = m_converter.toString(profile.ssbNotches);
+            cmbAxisSsb.SelectedIndex = profile.ssbAxis;
+            chkAxisSsbNegative.Checked = profile.ssbAxisNegative;
+
+            txtSwS.Text = m_converter.toSwitchString(profile.switchS);
+            txtSwA1.Text = m_converter.toSwitchString(profile.switchA1);
+            txtSwA2.Text = m_converter.toSwitchString(profile.switchA2);
+            txtSwB1.Text = m_converter.toSwitchString(profile.switchB1);
+            txtSwB2.Text = m_converter.toSwitchString(profile.switchB2);
+            txtSwC1.Text = m_converter.toSwitchString(profile.switchC1);
+            txtSwC2.Text = m_converter.toSwitchString(profile.switchC2);
+            txtSwD.Text = m_converter.toSwitchString(profile.switchD);
+            txtSwE.Text = m_converter.toSwitchString(profile.switchE);
+            txtSwF.Text = m_converter.toSwitchString(profile.switchF);
+            txtSwG.Text = m_converter.toSwitchString(profile.switchG);
+            txtSwH.Text = m_converter.toSwitchString(profile.switchH);
+            txtSwI.Text = m_converter.toSwitchString(profile.switchI);
+            txtSwJ.Text = m_converter.toSwitchString(profile.switchJ);
+            txtSwK.Text = m_converter.toSwitchString(profile.switchK);
+            txtSwL.Text = m_converter.toSwitchString(profile.switchL);
+            txtSwReverserFront.Text = m_converter.toSwitchString(profile.switchReverserFront);
+            txtSwReverserNeutral.Text = m_converter.toSwitchString(profile.switchReverserNeutral);
+            txtSwReverserBack.Text = m_converter.toSwitchString(profile.switchReverserBack);
+            txtSwHorn1.Text = m_converter.toSwitchString(profile.switchHorn1);
+            txtSwHorn2.Text = m_converter.toSwitchString(profile.switchHorn2);
+            txtSwMusicHorn.Text = m_converter.toSwitchString(profile.switchMusicHorn);
+            txtSwConstSpeed.Text = m_converter.toSwitchString(profile.switchConstSpeed);
         }
 
-        private void restoreConfiguration(ConfigFormSaveData saveData)
+        private void overwriteConfiguration(ConfigProfile profile)
         {
-            txtReverserFront.Text = toString(saveData.reverserPosFront);
-            txtReverserBack.Text = toString(saveData.reverserPosBack);
-            cmbAxisReverser.SelectedIndex = saveData.reverserAxis;
-            chkAxisReverserNegative.Checked = saveData.reverserAxisNegative;
-
-            txtBrakeEmr.Text = toString(saveData.brakePosEmr);
-            txtBrakeMax.Text = toString(saveData.brakePosMax);
-            txtBrakeNeutral.Text = toString(saveData.brakePosNeutral);
-            txtBrakeNotches.Text = toString(saveData.brakeNotches);
-            txtBrakeChatter.Text = toString(saveData.brakeChatter);
-            cmbAxisBrake.SelectedIndex = saveData.brakeAxis;
-            chkAxisBrakeNegative.Checked = saveData.brakeAxisNegative;
-
-            txtPowerNeutral.Text = toString(saveData.powerPosNeutral);
-            txtPowerMax.Text = toString(saveData.powerPosMax);
-            txtPowerNotches.Text = toString(saveData.powerNotches);
-            cmbAxisPower.SelectedIndex = saveData.powerAxis;
-            chkAxisPowerNegative.Checked = saveData.powerAxisNegative;
-
-            txtSsbNeutral.Text = toString(saveData.ssbPosNeutral);
-            txtSsbMax.Text = toString(saveData.ssbPosMax);
-            txtSsbNotches.Text = toString(saveData.ssbNotches);
-            cmbAxisSsb.SelectedIndex = saveData.ssbAxis;
-            chkAxisSsbNegative.Checked = saveData.ssbAxisNegative;
-
-            txtSwS.Text = toSwitchString(saveData.switchS);
-            txtSwA1.Text = toSwitchString(saveData.switchA1);
-            txtSwA2.Text = toSwitchString(saveData.switchA2);
-            txtSwB1.Text = toSwitchString(saveData.switchB1);
-            txtSwB2.Text = toSwitchString(saveData.switchB2);
-            txtSwC1.Text = toSwitchString(saveData.switchC1);
-            txtSwC2.Text = toSwitchString(saveData.switchC2);
-            txtSwD.Text = toSwitchString(saveData.switchD);
-            txtSwE.Text = toSwitchString(saveData.switchE);
-            txtSwF.Text = toSwitchString(saveData.switchF);
-            txtSwG.Text = toSwitchString(saveData.switchG);
-            txtSwH.Text = toSwitchString(saveData.switchH);
-            txtSwI.Text = toSwitchString(saveData.switchI);
-            txtSwJ.Text = toSwitchString(saveData.switchJ);
-            txtSwK.Text = toSwitchString(saveData.switchK);
-            txtSwL.Text = toSwitchString(saveData.switchL);
-            txtSwReverserFront.Text = toSwitchString(saveData.switchReverserFront);
-            txtSwReverserNeutral.Text = toSwitchString(saveData.switchReverserNeutral);
-            txtSwReverserBack.Text = toSwitchString(saveData.switchReverserBack);
-            txtSwHorn1.Text = toSwitchString(saveData.switchHorn1);
-            txtSwHorn2.Text = toSwitchString(saveData.switchHorn2);
-            txtSwMusicHorn.Text = toSwitchString(saveData.switchMusicHorn);
-            txtSwConstSpeed.Text = toSwitchString(saveData.switchConstSpeed);
-        }
-
-        private ConfigFormSaveData saveConfiguration()
-        {
-            ConfigFormSaveData saveData = new ConfigFormSaveData();
-
             if (directInputApi.currentJoystick != null)
             {
-                saveData.guid = directInputApi.currentJoystick.Information.ProductGuid;
+                profile.guid = directInputApi.currentJoystick.Information.ProductGuid;
             }
 
-            saveData.reverserPosFront = fromString(txtReverserFront.Text);
-            saveData.reverserPosBack = fromString(txtReverserBack.Text);
-            saveData.reverserAxis = cmbAxisReverser.SelectedIndex;
-            saveData.reverserAxisNegative = chkAxisReverserNegative.Checked;
+            profile.reverserPosFront = m_converter.fromString(txtReverserFront.Text);
+            profile.reverserPosBack = m_converter.fromString(txtReverserBack.Text);
+            profile.reverserAxis = cmbAxisReverser.SelectedIndex;
+            profile.reverserAxisNegative = chkAxisReverserNegative.Checked;
 
-            saveData.brakePosEmr = fromString(txtBrakeEmr.Text);
-            saveData.brakePosMax = fromString(txtBrakeMax.Text);
-            saveData.brakePosNeutral = fromString(txtBrakeNeutral.Text);
-            saveData.brakeNotches = fromString(txtBrakeNotches.Text);
-            saveData.brakeChatter = fromString(txtBrakeChatter.Text);
-            saveData.brakeAxis = cmbAxisBrake.SelectedIndex;
-            saveData.brakeAxisNegative = chkAxisBrakeNegative.Checked;
+            profile.brakePosEmr = m_converter.fromString(txtBrakeEmr.Text);
+            profile.brakePosMax = m_converter.fromString(txtBrakeMax.Text);
+            profile.brakePosNeutral = m_converter.fromString(txtBrakeNeutral.Text);
+            profile.brakeNotches = m_converter.fromString(txtBrakeNotches.Text);
+            profile.brakeChatter = m_converter.fromString(txtBrakeChatter.Text);
+            profile.brakeAxis = cmbAxisBrake.SelectedIndex;
+            profile.brakeAxisNegative = chkAxisBrakeNegative.Checked;
 
-            saveData.powerPosNeutral = fromString(txtPowerNeutral.Text);
-            saveData.powerPosMax = fromString(txtPowerMax.Text);
-            saveData.powerNotches = fromString(txtPowerNotches.Text);
-            saveData.powerAxis = cmbAxisPower.SelectedIndex;
-            saveData.powerAxisNegative = chkAxisPowerNegative.Checked;
+            profile.powerPosNeutral = m_converter.fromString(txtPowerNeutral.Text);
+            profile.powerPosMax = m_converter.fromString(txtPowerMax.Text);
+            profile.powerNotches = m_converter.fromString(txtPowerNotches.Text);
+            profile.powerAxis = cmbAxisPower.SelectedIndex;
+            profile.powerAxisNegative = chkAxisPowerNegative.Checked;
 
-            saveData.ssbPosNeutral = fromString(txtSsbNeutral.Text);
-            saveData.ssbPosMax = fromString(txtSsbMax.Text);
-            saveData.ssbNotches = fromString(txtSsbNotches.Text);
-            saveData.ssbAxis = cmbAxisSsb.SelectedIndex;
-            saveData.ssbAxisNegative = chkAxisSsbNegative.Checked;
+            profile.ssbPosNeutral = m_converter.fromString(txtSsbNeutral.Text);
+            profile.ssbPosMax = m_converter.fromString(txtSsbMax.Text);
+            profile.ssbNotches = m_converter.fromString(txtSsbNotches.Text);
+            profile.ssbAxis = cmbAxisSsb.SelectedIndex;
+            profile.ssbAxisNegative = chkAxisSsbNegative.Checked;
  
-            saveData.switchS = fromSwitchString(txtSwS.Text);
-            saveData.switchA1 = fromSwitchString(txtSwA1.Text);
-            saveData.switchA2 = fromSwitchString(txtSwA2.Text);
-            saveData.switchB1 = fromSwitchString(txtSwB1.Text);
-            saveData.switchB2 = fromSwitchString(txtSwB2.Text);
-            saveData.switchC1 = fromSwitchString(txtSwC1.Text);
-            saveData.switchC2 = fromSwitchString(txtSwC2.Text);
-            saveData.switchD = fromSwitchString(txtSwD.Text);
-            saveData.switchE = fromSwitchString(txtSwE.Text);
-            saveData.switchF = fromSwitchString(txtSwF.Text);
-            saveData.switchG = fromSwitchString(txtSwG.Text);
-            saveData.switchH = fromSwitchString(txtSwH.Text);
-            saveData.switchI = fromSwitchString(txtSwI.Text);
-            saveData.switchJ = fromSwitchString(txtSwJ.Text);
-            saveData.switchK = fromSwitchString(txtSwK.Text);
-            saveData.switchL = fromSwitchString(txtSwL.Text);
-            saveData.switchReverserFront = fromSwitchString(txtSwReverserFront.Text);
-            saveData.switchReverserNeutral = fromSwitchString(txtSwReverserNeutral.Text);
-            saveData.switchReverserBack = fromSwitchString(txtSwReverserBack.Text);
-            saveData.switchHorn1 = fromSwitchString(txtSwHorn1.Text);
-            saveData.switchHorn2 = fromSwitchString(txtSwHorn2.Text);
-            saveData.switchMusicHorn = fromSwitchString(txtSwMusicHorn.Text);
-            saveData.switchConstSpeed = fromSwitchString(txtSwConstSpeed.Text);
-
-            return saveData;
+            profile.switchS = m_converter.fromSwitchString(txtSwS.Text);
+            profile.switchA1 = m_converter.fromSwitchString(txtSwA1.Text);
+            profile.switchA2 = m_converter.fromSwitchString(txtSwA2.Text);
+            profile.switchB1 = m_converter.fromSwitchString(txtSwB1.Text);
+            profile.switchB2 = m_converter.fromSwitchString(txtSwB2.Text);
+            profile.switchC1 = m_converter.fromSwitchString(txtSwC1.Text);
+            profile.switchC2 = m_converter.fromSwitchString(txtSwC2.Text);
+            profile.switchD = m_converter.fromSwitchString(txtSwD.Text);
+            profile.switchE = m_converter.fromSwitchString(txtSwE.Text);
+            profile.switchF = m_converter.fromSwitchString(txtSwF.Text);
+            profile.switchG = m_converter.fromSwitchString(txtSwG.Text);
+            profile.switchH = m_converter.fromSwitchString(txtSwH.Text);
+            profile.switchI = m_converter.fromSwitchString(txtSwI.Text);
+            profile.switchJ = m_converter.fromSwitchString(txtSwJ.Text);
+            profile.switchK = m_converter.fromSwitchString(txtSwK.Text);
+            profile.switchL = m_converter.fromSwitchString(txtSwL.Text);
+            profile.switchReverserFront = m_converter.fromSwitchString(txtSwReverserFront.Text);
+            profile.switchReverserNeutral = m_converter.fromSwitchString(txtSwReverserNeutral.Text);
+            profile.switchReverserBack = m_converter.fromSwitchString(txtSwReverserBack.Text);
+            profile.switchHorn1 = m_converter.fromSwitchString(txtSwHorn1.Text);
+            profile.switchHorn2 = m_converter.fromSwitchString(txtSwHorn2.Text);
+            profile.switchMusicHorn = m_converter.fromSwitchString(txtSwMusicHorn.Text);
+            profile.switchConstSpeed = m_converter.fromSwitchString(txtSwConstSpeed.Text);
         }
 
         public void enumerateDevices()
@@ -319,7 +197,7 @@ namespace oneHandleInput
             {
                 cmbJoySelect.Items.Add(directInputApi.joystickList[i].ProductName);
 
-                if (m_saveData.guid == directInputApi.joystickList[i].ProductGuid)
+                if (m_profiles.currentProfile.guid == directInputApi.joystickList[i].ProductGuid)
                 {
                     directInputApi.selectJoystick(i, this.Handle);
                     cmbJoySelect.SelectedIndex = i;
@@ -332,41 +210,52 @@ namespace oneHandleInput
             }
         }
 
-        private string toString(int n)
-        {
-            return n.ToString();
-        }
-
-        private int fromString(string s)
-        {
-            int n = 0;
-
-            try
-            {
-                n = int.Parse(s);
-            }
-            catch
-            {
-                n = 0;
-            }
-
-            return n;
-        }
-
         private void ConfigForm_Load(object sender, EventArgs e)
         {
-            
+
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            m_saveData = saveConfiguration();
-            saveConfigurationFile(m_configFilePath);
-            this.Close();
+            string currentKey = m_profiles.currentKey;
+            ConfigProfile currentProfile = m_profiles.currentProfile;
+
+            overwriteConfiguration(currentProfile);
+            currentProfile.save(Path.Combine(m_configDirectory, currentKey + ".xml"));
+
+            m_isSaved = true;
+        }
+
+        private void btnSaveAs_Click(object sender, EventArgs e)
+        {
+            string newKey;
+            using (SaveAsForm dialog = new SaveAsForm(m_configDirectory, m_profiles.isInitialSetting ? "" : m_profiles.currentKey))
+            {
+                DialogResult result = dialog.ShowDialog();
+                if (result != DialogResult.OK) return;
+
+                newKey = dialog.newName;
+            }
+
+            ConfigProfile newProfile = new ConfigProfile();
+
+            overwriteConfiguration(newProfile);
+            newProfile.save(Path.Combine(m_configDirectory, newKey + ".xml"));
+            loadProfiles();
+
+            m_isSaved = true;
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
+            if (!m_isSaved)
+            {
+                DialogResult result = MessageBox.Show("変更は保存されていません。本当に終了してもよろしいですか？", "oneHandleInput",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result != DialogResult.Yes) return;
+            }
+
+            m_profiles.save(m_configDirectory);
             this.Close();
         }
 
@@ -383,95 +272,95 @@ namespace oneHandleInput
                 {
                     if (txtSwS.Focused)
                     {
-                        txtSwS.Text = toSwitchString(i);
+                        txtSwS.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwA1.Focused)
                     {
-                        txtSwA1.Text = toSwitchString(i);
+                        txtSwA1.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwA2.Focused)
                     {
-                        txtSwA2.Text = toSwitchString(i);
+                        txtSwA2.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwB1.Focused)
                     {
-                        txtSwB1.Text = toSwitchString(i);
+                        txtSwB1.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwB2.Focused)
                     {
-                        txtSwB2.Text = toSwitchString(i);
+                        txtSwB2.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwC1.Focused)
                     {
-                        txtSwC1.Text = toSwitchString(i);
+                        txtSwC1.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwC2.Focused)
                     {
-                        txtSwC2.Text = toSwitchString(i);
+                        txtSwC2.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwD.Focused)
                     {
-                        txtSwD.Text = toSwitchString(i);
+                        txtSwD.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwE.Focused)
                     {
-                        txtSwE.Text = toSwitchString(i);
+                        txtSwE.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwF.Focused)
                     {
-                        txtSwF.Text = toSwitchString(i);
+                        txtSwF.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwG.Focused)
                     {
-                        txtSwG.Text = toSwitchString(i);
+                        txtSwG.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwH.Focused)
                     {
-                        txtSwH.Text = toSwitchString(i);
+                        txtSwH.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwI.Focused)
                     {
-                        txtSwI.Text = toSwitchString(i);
+                        txtSwI.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwJ.Focused)
                     {
-                        txtSwJ.Text = toSwitchString(i);
+                        txtSwJ.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwK.Focused)
                     {
-                        txtSwK.Text = toSwitchString(i);
+                        txtSwK.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwL.Focused)
                     {
-                        txtSwL.Text = toSwitchString(i);
+                        txtSwL.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwReverserFront.Focused)
                     {
-                        txtSwReverserFront.Text = toSwitchString(i);
+                        txtSwReverserFront.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwReverserNeutral.Focused)
                     {
-                        txtSwReverserNeutral.Text = toSwitchString(i);
+                        txtSwReverserNeutral.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwReverserBack.Focused)
                     {
-                        txtSwReverserBack.Text = toSwitchString(i);
+                        txtSwReverserBack.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwHorn1.Focused)
                     {
-                        txtSwHorn1.Text = toSwitchString(i);
+                        txtSwHorn1.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwHorn2.Focused)
                     {
-                        txtSwHorn2.Text = toSwitchString(i);
+                        txtSwHorn2.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwMusicHorn.Focused)
                     {
-                        txtSwMusicHorn.Text = toSwitchString(i);
+                        txtSwMusicHorn.Text = m_converter.toSwitchString(i);
                     }
                     else if (txtSwConstSpeed.Focused)
                     {
-                        txtSwConstSpeed.Text = toSwitchString(i);
+                        txtSwConstSpeed.Text = m_converter.toSwitchString(i);
                     }
 
                     break;
@@ -487,21 +376,21 @@ namespace oneHandleInput
             {
                 if (!chkInfoNegative.Checked)
                 {
-                    txtInfoX.Text = toString(directInputApi.currentJoystickState.X);
-                    txtInfoY.Text = toString(directInputApi.currentJoystickState.Y);
-                    txtInfoZ.Text = toString(directInputApi.currentJoystickState.Z);
-                    txtInfoRx.Text = toString(directInputApi.currentJoystickState.RotationX);
-                    txtInfoRy.Text = toString(directInputApi.currentJoystickState.RotationY);
-                    txtInfoRz.Text = toString(directInputApi.currentJoystickState.RotationZ);
+                    txtInfoX.Text = m_converter.toString(directInputApi.currentJoystickState.X);
+                    txtInfoY.Text = m_converter.toString(directInputApi.currentJoystickState.Y);
+                    txtInfoZ.Text = m_converter.toString(directInputApi.currentJoystickState.Z);
+                    txtInfoRx.Text = m_converter.toString(directInputApi.currentJoystickState.RotationX);
+                    txtInfoRy.Text = m_converter.toString(directInputApi.currentJoystickState.RotationY);
+                    txtInfoRz.Text = m_converter.toString(directInputApi.currentJoystickState.RotationZ);
                 }
                 else
                 {
-                    txtInfoX.Text = toString(0xFFFF - directInputApi.currentJoystickState.X);
-                    txtInfoY.Text = toString(0xFFFF - directInputApi.currentJoystickState.Y);
-                    txtInfoZ.Text = toString(0xFFFF - directInputApi.currentJoystickState.Z);
-                    txtInfoRx.Text = toString(0xFFFF - directInputApi.currentJoystickState.RotationX);
-                    txtInfoRy.Text = toString(0xFFFF - directInputApi.currentJoystickState.RotationY);
-                    txtInfoRz.Text = toString(0xFFFF - directInputApi.currentJoystickState.RotationZ);
+                    txtInfoX.Text = m_converter.toString(0xFFFF - directInputApi.currentJoystickState.X);
+                    txtInfoY.Text = m_converter.toString(0xFFFF - directInputApi.currentJoystickState.Y);
+                    txtInfoZ.Text = m_converter.toString(0xFFFF - directInputApi.currentJoystickState.Z);
+                    txtInfoRx.Text = m_converter.toString(0xFFFF - directInputApi.currentJoystickState.RotationX);
+                    txtInfoRy.Text = m_converter.toString(0xFFFF - directInputApi.currentJoystickState.RotationY);
+                    txtInfoRz.Text = m_converter.toString(0xFFFF - directInputApi.currentJoystickState.RotationZ);
                 }
 
                 configurateSwitch();
@@ -522,7 +411,19 @@ namespace oneHandleInput
             timer1.Enabled = true;
 
             enumerateDevices();
-            restoreConfiguration(m_saveData);
+            loadProfiles();
+            restoreConfiguration(currentProfile);
+
+            m_isSaved = false;
+        }
+
+        private void cmbProfileSelect_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (cmbProfileSelect.SelectedIndex != -1)
+            {
+                m_profiles.currentKey = (string)cmbProfileSelect.SelectedItem;
+                restoreConfiguration(currentProfile);
+            }
         }
 
         private void cmbJoySelect_SelectedIndexChanged(object sender, EventArgs e)

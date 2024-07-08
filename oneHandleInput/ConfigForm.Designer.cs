@@ -62,6 +62,14 @@
             this.label10 = new System.Windows.Forms.Label();
             this.txtReverserFront = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label46 = new System.Windows.Forms.Label();
+            this.label43 = new System.Windows.Forms.Label();
+            this.label44 = new System.Windows.Forms.Label();
+            this.label45 = new System.Windows.Forms.Label();
+            this.txtSwConstSpeed = new System.Windows.Forms.TextBox();
+            this.txtSwMusicHorn = new System.Windows.Forms.TextBox();
+            this.txtSwHorn2 = new System.Windows.Forms.TextBox();
+            this.txtSwHorn1 = new System.Windows.Forms.TextBox();
             this.label42 = new System.Windows.Forms.Label();
             this.label41 = new System.Windows.Forms.Label();
             this.label40 = new System.Windows.Forms.Label();
@@ -129,14 +137,10 @@
             this.label37 = new System.Windows.Forms.Label();
             this.txtSsbMax = new System.Windows.Forms.TextBox();
             this.label38 = new System.Windows.Forms.Label();
-            this.txtSwMusicHorn = new System.Windows.Forms.TextBox();
-            this.txtSwHorn2 = new System.Windows.Forms.TextBox();
-            this.txtSwHorn1 = new System.Windows.Forms.TextBox();
-            this.txtSwConstSpeed = new System.Windows.Forms.TextBox();
-            this.label43 = new System.Windows.Forms.Label();
-            this.label44 = new System.Windows.Forms.Label();
-            this.label45 = new System.Windows.Forms.Label();
-            this.label46 = new System.Windows.Forms.Label();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.label47 = new System.Windows.Forms.Label();
+            this.cmbProfileSelect = new System.Windows.Forms.ComboBox();
+            this.btnSaveAs = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -144,6 +148,7 @@
             this.groupBox5.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox7.SuspendLayout();
+            this.groupBox8.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -161,7 +166,7 @@
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.txtBrakeEmr);
-            this.groupBox2.Location = new System.Drawing.Point(216, 12);
+            this.groupBox2.Location = new System.Drawing.Point(216, 18);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(195, 175);
             this.groupBox2.TabIndex = 4;
@@ -287,7 +292,7 @@
             this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Controls.Add(this.txtPowerMax);
             this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Location = new System.Drawing.Point(216, 193);
+            this.groupBox3.Location = new System.Drawing.Point(216, 199);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(195, 140);
             this.groupBox3.TabIndex = 5;
@@ -379,7 +384,7 @@
             this.groupBox4.Controls.Add(this.label8);
             this.groupBox4.Controls.Add(this.label10);
             this.groupBox4.Controls.Add(this.txtReverserFront);
-            this.groupBox4.Location = new System.Drawing.Point(39, 12);
+            this.groupBox4.Location = new System.Drawing.Point(39, 18);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(137, 172);
             this.groupBox4.TabIndex = 6;
@@ -494,12 +499,84 @@
             this.groupBox1.Controls.Add(this.label14);
             this.groupBox1.Controls.Add(this.txtSwS);
             this.groupBox1.Controls.Add(this.label13);
-            this.groupBox1.Location = new System.Drawing.Point(417, 14);
+            this.groupBox1.Location = new System.Drawing.Point(417, 20);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(228, 320);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "スイッチ";
+            // 
+            // label46
+            // 
+            this.label46.AutoSize = true;
+            this.label46.Location = new System.Drawing.Point(104, 267);
+            this.label46.Name = "label46";
+            this.label46.Size = new System.Drawing.Size(29, 12);
+            this.label46.TabIndex = 46;
+            this.label46.Text = "定速";
+            // 
+            // label43
+            // 
+            this.label43.AutoSize = true;
+            this.label43.Location = new System.Drawing.Point(107, 243);
+            this.label43.Name = "label43";
+            this.label43.Size = new System.Drawing.Size(22, 12);
+            this.label43.TabIndex = 45;
+            this.label43.Text = "MH";
+            // 
+            // label44
+            // 
+            this.label44.AutoSize = true;
+            this.label44.Location = new System.Drawing.Point(106, 219);
+            this.label44.Name = "label44";
+            this.label44.Size = new System.Drawing.Size(23, 12);
+            this.label44.TabIndex = 44;
+            this.label44.Text = "笛2";
+            // 
+            // label45
+            // 
+            this.label45.AutoSize = true;
+            this.label45.Location = new System.Drawing.Point(106, 192);
+            this.label45.Name = "label45";
+            this.label45.Size = new System.Drawing.Size(23, 12);
+            this.label45.TabIndex = 43;
+            this.label45.Text = "笛1";
+            // 
+            // txtSwConstSpeed
+            // 
+            this.txtSwConstSpeed.Location = new System.Drawing.Point(133, 264);
+            this.txtSwConstSpeed.Name = "txtSwConstSpeed";
+            this.txtSwConstSpeed.ReadOnly = true;
+            this.txtSwConstSpeed.Size = new System.Drawing.Size(76, 19);
+            this.txtSwConstSpeed.TabIndex = 42;
+            this.txtSwConstSpeed.KeyDown += new System.Windows.Forms.KeyEventHandler(this.deconfigurateSwitch);
+            // 
+            // txtSwMusicHorn
+            // 
+            this.txtSwMusicHorn.Location = new System.Drawing.Point(133, 240);
+            this.txtSwMusicHorn.Name = "txtSwMusicHorn";
+            this.txtSwMusicHorn.ReadOnly = true;
+            this.txtSwMusicHorn.Size = new System.Drawing.Size(76, 19);
+            this.txtSwMusicHorn.TabIndex = 41;
+            this.txtSwMusicHorn.KeyDown += new System.Windows.Forms.KeyEventHandler(this.deconfigurateSwitch);
+            // 
+            // txtSwHorn2
+            // 
+            this.txtSwHorn2.Location = new System.Drawing.Point(133, 215);
+            this.txtSwHorn2.Name = "txtSwHorn2";
+            this.txtSwHorn2.ReadOnly = true;
+            this.txtSwHorn2.Size = new System.Drawing.Size(76, 19);
+            this.txtSwHorn2.TabIndex = 40;
+            this.txtSwHorn2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.deconfigurateSwitch);
+            // 
+            // txtSwHorn1
+            // 
+            this.txtSwHorn1.Location = new System.Drawing.Point(133, 189);
+            this.txtSwHorn1.Name = "txtSwHorn1";
+            this.txtSwHorn1.ReadOnly = true;
+            this.txtSwHorn1.Size = new System.Drawing.Size(76, 19);
+            this.txtSwHorn1.TabIndex = 39;
+            this.txtSwHorn1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.deconfigurateSwitch);
             // 
             // label42
             // 
@@ -846,7 +923,7 @@
             // groupBox5
             // 
             this.groupBox5.Controls.Add(this.cmbJoySelect);
-            this.groupBox5.Location = new System.Drawing.Point(663, 212);
+            this.groupBox5.Location = new System.Drawing.Point(678, 244);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(179, 49);
             this.groupBox5.TabIndex = 8;
@@ -865,17 +942,17 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(663, 267);
+            this.btnSave.Location = new System.Drawing.Point(678, 307);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(87, 69);
+            this.btnSave.Size = new System.Drawing.Size(87, 44);
             this.btnSave.TabIndex = 9;
-            this.btnSave.Text = "保存して閉じる";
+            this.btnSave.Text = "上書き保存";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(766, 298);
+            this.btnClose.Location = new System.Drawing.Point(780, 360);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(76, 37);
             this.btnClose.TabIndex = 10;
@@ -898,7 +975,7 @@
             this.groupBox6.Controls.Add(this.label30);
             this.groupBox6.Controls.Add(this.txtInfoX);
             this.groupBox6.Controls.Add(this.label29);
-            this.groupBox6.Location = new System.Drawing.Point(663, 12);
+            this.groupBox6.Location = new System.Drawing.Point(678, 44);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(178, 194);
             this.groupBox6.TabIndex = 11;
@@ -1032,7 +1109,7 @@
             this.groupBox7.Controls.Add(this.label37);
             this.groupBox7.Controls.Add(this.txtSsbMax);
             this.groupBox7.Controls.Add(this.label38);
-            this.groupBox7.Location = new System.Drawing.Point(12, 194);
+            this.groupBox7.Location = new System.Drawing.Point(12, 200);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(195, 140);
             this.groupBox7.TabIndex = 12;
@@ -1115,93 +1192,62 @@
             this.label38.TabIndex = 2;
             this.label38.Text = "最大";
             // 
-            // txtSwMusicHorn
+            // groupBox8
             // 
-            this.txtSwMusicHorn.Location = new System.Drawing.Point(133, 240);
-            this.txtSwMusicHorn.Name = "txtSwMusicHorn";
-            this.txtSwMusicHorn.ReadOnly = true;
-            this.txtSwMusicHorn.Size = new System.Drawing.Size(76, 19);
-            this.txtSwMusicHorn.TabIndex = 41;
-            this.txtSwMusicHorn.KeyDown += new System.Windows.Forms.KeyEventHandler(this.deconfigurateSwitch);
+            this.groupBox8.Controls.Add(this.groupBox4);
+            this.groupBox8.Controls.Add(this.groupBox7);
+            this.groupBox8.Controls.Add(this.groupBox2);
+            this.groupBox8.Controls.Add(this.groupBox3);
+            this.groupBox8.Controls.Add(this.groupBox1);
+            this.groupBox8.Location = new System.Drawing.Point(12, 44);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(656, 353);
+            this.groupBox8.TabIndex = 13;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "設定";
             // 
-            // txtSwHorn2
+            // label47
             // 
-            this.txtSwHorn2.Location = new System.Drawing.Point(133, 215);
-            this.txtSwHorn2.Name = "txtSwHorn2";
-            this.txtSwHorn2.ReadOnly = true;
-            this.txtSwHorn2.Size = new System.Drawing.Size(76, 19);
-            this.txtSwHorn2.TabIndex = 40;
-            this.txtSwHorn2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.deconfigurateSwitch);
+            this.label47.AutoSize = true;
+            this.label47.Location = new System.Drawing.Point(10, 15);
+            this.label47.Name = "label47";
+            this.label47.Size = new System.Drawing.Size(57, 12);
+            this.label47.TabIndex = 14;
+            this.label47.Text = "プロファイル";
             // 
-            // txtSwHorn1
+            // cmbProfileSelect
             // 
-            this.txtSwHorn1.Location = new System.Drawing.Point(133, 189);
-            this.txtSwHorn1.Name = "txtSwHorn1";
-            this.txtSwHorn1.ReadOnly = true;
-            this.txtSwHorn1.Size = new System.Drawing.Size(76, 19);
-            this.txtSwHorn1.TabIndex = 39;
-            this.txtSwHorn1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.deconfigurateSwitch);
+            this.cmbProfileSelect.FormattingEnabled = true;
+            this.cmbProfileSelect.Location = new System.Drawing.Point(73, 12);
+            this.cmbProfileSelect.Name = "cmbProfileSelect";
+            this.cmbProfileSelect.Size = new System.Drawing.Size(300, 20);
+            this.cmbProfileSelect.TabIndex = 15;
+            this.cmbProfileSelect.SelectedValueChanged += new System.EventHandler(this.cmbProfileSelect_SelectedValueChanged);
             // 
-            // txtSwConstSpeed
+            // btnSaveAs
             // 
-            this.txtSwConstSpeed.Location = new System.Drawing.Point(133, 264);
-            this.txtSwConstSpeed.Name = "txtSwConstSpeed";
-            this.txtSwConstSpeed.ReadOnly = true;
-            this.txtSwConstSpeed.Size = new System.Drawing.Size(76, 19);
-            this.txtSwConstSpeed.TabIndex = 42;
-            this.txtSwConstSpeed.KeyDown += new System.Windows.Forms.KeyEventHandler(this.deconfigurateSwitch);
-            // 
-            // label43
-            // 
-            this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(107, 243);
-            this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(22, 12);
-            this.label43.TabIndex = 45;
-            this.label43.Text = "MH";
-            // 
-            // label44
-            // 
-            this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(106, 219);
-            this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(23, 12);
-            this.label44.TabIndex = 44;
-            this.label44.Text = "笛2";
-            // 
-            // label45
-            // 
-            this.label45.AutoSize = true;
-            this.label45.Location = new System.Drawing.Point(106, 192);
-            this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(23, 12);
-            this.label45.TabIndex = 43;
-            this.label45.Text = "笛1";
-            // 
-            // label46
-            // 
-            this.label46.AutoSize = true;
-            this.label46.Location = new System.Drawing.Point(104, 267);
-            this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(29, 12);
-            this.label46.TabIndex = 46;
-            this.label46.Text = "定速";
+            this.btnSaveAs.Location = new System.Drawing.Point(769, 307);
+            this.btnSaveAs.Name = "btnSaveAs";
+            this.btnSaveAs.Size = new System.Drawing.Size(87, 44);
+            this.btnSaveAs.TabIndex = 16;
+            this.btnSaveAs.Text = "名前を付けて保存";
+            this.btnSaveAs.UseVisualStyleBackColor = true;
+            this.btnSaveAs.Click += new System.EventHandler(this.btnSaveAs_Click);
             // 
             // ConfigForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(856, 346);
+            this.ClientSize = new System.Drawing.Size(868, 409);
             this.ControlBox = false;
-            this.Controls.Add(this.groupBox7);
+            this.Controls.Add(this.btnSaveAs);
+            this.Controls.Add(this.cmbProfileSelect);
+            this.Controls.Add(this.label47);
+            this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.groupBox6);
+            this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnSave);
-            this.Controls.Add(this.groupBox5);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.groupBox4);
-            this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "ConfigForm";
             this.Text = "oneHandleInput";
@@ -1221,7 +1267,9 @@
             this.groupBox6.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
+            this.groupBox8.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -1335,5 +1383,9 @@
         private System.Windows.Forms.TextBox txtSwMusicHorn;
         private System.Windows.Forms.TextBox txtSwHorn2;
         private System.Windows.Forms.TextBox txtSwHorn1;
+        private System.Windows.Forms.GroupBox groupBox8;
+        private System.Windows.Forms.Label label47;
+        private System.Windows.Forms.ComboBox cmbProfileSelect;
+        private System.Windows.Forms.Button btnSaveAs;
     }
 }

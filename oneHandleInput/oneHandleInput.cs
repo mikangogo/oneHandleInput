@@ -25,8 +25,7 @@ namespace oneHandleInput
             m_first = true;
             directInputApi.init();
 
-            m_configForm = new ConfigForm();
-            m_configForm.loadConfigurationFile(settingsPath);
+            m_configForm = new ConfigForm(settingsPath);
             m_configForm.Hide();
 
             m_lastReverserPos = 0xFFFF;
@@ -77,9 +76,12 @@ namespace oneHandleInput
 
         private void setSwitchState()
         {
+            SlimDX.DirectInput.Device currentJoystick = directInputApi.currentJoystick;
+            if (currentJoystick == null) return;
+
             var currentButtonState = directInputApi.currentJoystickState.GetButtons();
             var lastButtonState = directInputApi.lastJoystickState.GetButtons();
-            int buttonNum = directInputApi.currentJoystick.Capabilities.ButtonCount;
+            int buttonNum = currentJoystick.Capabilities.ButtonCount;
 
             for (int i = 0; i < buttonNum; ++i)
             {
@@ -159,7 +161,7 @@ namespace oneHandleInput
         private int getKeyIdx(int i)
         {
             int keyIdx = -1;
-            ConfigForm.ConfigFormSaveData config = m_configForm.Configuration;
+            ConfigProfile config = m_configForm.currentProfile;
 
             if (config.switchS == i)
             {
@@ -259,7 +261,7 @@ namespace oneHandleInput
 
         private void setPowerPos()
         {
-            ConfigForm.ConfigFormSaveData config = m_configForm.Configuration;
+            ConfigProfile config = m_configForm.currentProfile;
             int notchPos = 0;
 
             if (config.powerAxis == (int)ConfigForm.AxisType.axisNothing)
@@ -306,7 +308,7 @@ namespace oneHandleInput
 
         private void setSsbPos()
         {
-            ConfigForm.ConfigFormSaveData config = m_configForm.Configuration;
+            ConfigProfile config = m_configForm.currentProfile;
             int notchPos = 0;
 
             if (config.ssbAxis == (int)ConfigForm.AxisType.axisNothing)
@@ -353,7 +355,7 @@ namespace oneHandleInput
 
         private void setBrakePos()
         {
-            ConfigForm.ConfigFormSaveData config = m_configForm.Configuration;
+            ConfigProfile config = m_configForm.currentProfile;
             int notchPos = 0;
             bool force_move = false;
 
@@ -419,7 +421,7 @@ namespace oneHandleInput
 
         private void setReverserPos()
         {
-            ConfigForm.ConfigFormSaveData config = m_configForm.Configuration;
+            ConfigProfile config = m_configForm.currentProfile;
             int notchPos = 0;
 
             if (config.reverserAxis == (int)ConfigForm.AxisType.axisNothing)
